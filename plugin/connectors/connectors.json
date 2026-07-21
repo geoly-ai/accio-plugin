@@ -1,0 +1,32 @@
+{
+  "oauth": {
+    "geoly": {
+      "name": "GEOly",
+      "brief": "Connect your GEOly account for AI search visibility data",
+      "description": "Sign in with your GEOly account to let the agent read your brand's AI visibility data from app.geoly.ai — mentions, citations, AIGVR, Share of Model, daily trends, competitor benchmarks and public industry intelligence.",
+      "icon": "resources/geoly.png",
+      "color": "#111111",
+      "authType": "cli-login",
+      "blocking": true,
+      "canSkipBlocking": true,
+      "multiAccount": false,
+      "usage": "For GEO / AI-search visibility analytics (brand mentions, citation rate, AIGVR, Share of Model across ChatGPT, Perplexity, Gemini), read the geoly-geo skill and call the GEOly MCP tools discovered via accio-mcp-cli toolkit geoly. Always resolve the org/brand first (list_brands, then get_brand_overview) before quoting any metric.",
+      "cli": {
+        "discover": "npx",
+        "auth": {
+          "npmPackage": "@geoly/accio-mcp@0.1.0",
+          "loginArgs": ["login"]
+        },
+        "credential": {
+          "kind": "file",
+          "home": ".geoly/credentials"
+        },
+        "mcpServer": {
+          "name": "geoly",
+          "npmPackage": "@geoly/accio-mcp@0.1.0"
+        },
+        "fallbackLabel": "GEOly account"
+      }
+    }
+  }
+}

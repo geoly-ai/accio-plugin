@@ -1,0 +1,26 @@
+[
+  {
+    "id": "summary",
+    "type": "summary",
+    "key": "AI search visibility analytics",
+    "value": "Measures how a brand shows up in ChatGPT, Perplexity, Gemini, Grok and Google AI answers — mentions, citations, AIGVR and Share of Model — live from your GEOly workspace."
+  },
+  {
+    "id": "kpi",
+    "type": "capability",
+    "key": "Headline KPIs & trends",
+    "value": "Brand overview KPIs, daily visibility trends, per-prompt drill-down, citation URL and domain analysis."
+  },
+  {
+    "id": "competitive",
+    "type": "capability",
+    "key": "Competitive intelligence",
+    "value": "Competitor benchmarks, public category leaderboards, whitespace and brand momentum, head-to-head brand comparison, AI search query demand."
+  },
+  {
+    "id": "guardrails",
+    "type": "capability",
+    "key": "Metric guardrails",
+    "value": "Keeps the agent on the correct metric caliber — headline vs daily vs record-weighted — so quoted numbers match the GEOly app."
+  }
+]
