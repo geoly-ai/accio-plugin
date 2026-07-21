@@ -28,7 +28,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/geoly-ai/accio-plugin.git",
+    "url": "git+https://github.com/geoly-ai/accio-plugin.git",
     "directory": "packages/accio-mcp"
   },
   "publishConfig": {
