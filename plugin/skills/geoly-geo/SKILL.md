@@ -18,7 +18,7 @@ tool_triggers:
 # GEOly AI Visibility
 
 [GEOly](https://www.geoly.ai) tracks how brands are mentioned and cited across AI engines (ChatGPT, Gemini,
-Perplexity, Grok, Google AI). The GEOly MCP server exposes **up to 63 tools** (the exact set depends
+Perplexity, Grok, Google AI). The GEOly MCP server exposes **up to 66 tools** (the exact set depends
 on plan, mode, and write profile) across two surfaces:
 
 - **Self / brand-own** — the customer's own monitoring, audits, GA4, and write actions.
@@ -86,12 +86,14 @@ public/report tools) and paginate (`currentPage == totalPages`) instead of assum
 - **Subscription gate**: single-org / single-brand context returns **HTTP 402** at entry if the
   subscription is inactive. Multi-org validates **per target org at call time** and fails that
   org's tool call with an error message (not a 402).
-- **Public tools** require a **Grow-tier-or-above** plan (`grow | advanced | plus | enterprise`)
-  in **single-org** context. If `get_public_*` / `compare_public_brands` / `get_category_*`
-  aren't available, the org lacks the tier or an active entitlement.
-- **Writes** (`create_prompt`, `create_topic`, `create_competitor`, `trigger_prompt`) require the
-  **standard** (write) profile chosen on the OAuth consent screen; the default is read-only, and
-  the `geom_` static token is always read-only. `trigger_prompt` **consumes credits**.
+- **Public tools** require a **Grow-tier-or-above** plan (`grow | advanced | plus | enterprise`).
+  Multi-org connections get them too, as long as **any** accessible org qualifies. The three
+  public **source** tools (`get_public_sources_overview` / `get_public_source_domain_detail` /
+  `get_public_source_brand_conduit`) are NOT plan-gated — every token has them.
+- **Writes** (`create_prompt`, `create_topic`, `create_competitor`, `trigger_prompt`) require
+  **write access granted on the OAuth consent screen** (per-resource read/write grid; default
+  is all-read, no-write). The `geom_` static token is always read-only, and **multi-org
+  connections are always read-only**. `trigger_prompt` **consumes credits**.
 - **Dates**: call `get_current_date` before building date ranges; `query_analytics` ranges ≤ 366 days.
 
 ## Tool selection — question → tool

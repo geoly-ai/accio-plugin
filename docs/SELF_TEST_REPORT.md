@@ -12,7 +12,7 @@
 | 评测人 | ____ |
 | Plugin 文件 | （插入 plugin/ 目录 zip 包） |
 | 测试账号 | 账户名称：____ 账户密码：____（建议提供一个含监控数据的 GEOly 演示账号） |
-| Tool 个数 | ____（连接后 `accio-mcp-cli toolkit geoly` 实数为准；随套餐/模式 30-63 个） |
+| Tool 个数 | ____（连接后 `accio-mcp-cli toolkit geoly` 实数为准；随套餐/模式 30-66 个） |
 | Skill 场景个数 | 5 |
 
 ## 一、Plugin 准入检查（全部通过才能继续）
