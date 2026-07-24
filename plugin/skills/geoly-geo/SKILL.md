@@ -2,7 +2,7 @@
 name: geoly-geo
 displayName: GEOly AI Visibility
 description: "Use when querying or reporting on AI brand visibility through the GEOly MCP tools — picking the right tool, following the org/brand discovery flow, quoting the correct KPI caliber, and avoiding metric-definition pitfalls. Use for: GEO / generative engine optimization, AI search visibility, brand mentions and citations in ChatGPT / Perplexity / Gemini / Grok / Google AI answers, citation rate, mention rate, AIGVR, Share of Model, competitor benchmarking, category whitespace, brand momentum, AI search query demand, site AI-readiness audit. 中文：AI 搜索可见度、品牌在 AI 回答中的提及与引用、GEO 优化、引用率、提及率、AI 排名监测、竞品对比。Do NOT use for classic web SEO keyword rankings, backlink analysis, or paid-ads analytics — GEOly measures AI-answer visibility, not search-engine result pages."
-version: "0.1.0"
+version: "0.1.1"
 tool_triggers:
   - tool: bash
     args:
@@ -57,6 +57,15 @@ syntax). Two rules that otherwise waste calls:
   per-call timeout, raise it to **60s+** for these; otherwise make the query cheaper first — narrow
   the date range and/or add a `platform` filter. A timeout is a "make it smaller / wait longer"
   signal, not a dead end — don't abandon the analysis on the first timeout.
+
+## Presenting results (output format — do this every answer)
+
+Answer in **plain Markdown**: headings, Markdown tables, bullet lists. Put every number in a
+Markdown table; show a trend as a small table or a plain-text bar (e.g. `Apple ███████░░ 6.4%`).
+**Never emit raw HTML, CSS, or `<style>` / `<script>` / `<canvas>` / inline-styled `<div>` blocks** —
+the host renders them as literal source code, which buries the answer under markup. Keep output to
+what Markdown alone can render. Lead with the headline number and the "so what", then the supporting
+table, then a one-line caliber note (which metric, which window, which platform).
 
 ## Core Principles
 

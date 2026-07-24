@@ -11,7 +11,7 @@
 | 评测内容 | GEOly |
 | 评测时间 | 2026-07-24 |
 | 评测人 | Noah Buyer（Accio 操作账号）；GEOly 连接账号 hfyl9709@gmail.com（本工作区含 Apple 受监控数据） |
-| Plugin 文件 | geoly-plugin-0.2.8.zip |
+| Plugin 文件 | geoly-plugin-0.2.9.zip（0.2.8 上加"输出用 Markdown、禁 HTML"，对应发现 1；Skill 逻辑与截图一致） |
 | 测试账号 | 自测用 owner 账号（hfyl9709@gmail.com，已连接、Grow+、含真实监控数据）；评测方另用其自有测试账号 |
 | Tool 个数 | 连接后 `accio-mcp-cli toolkit geoly` 实数为准（实测约 44 个 success 覆盖，含 self + public 两面） |
 | Skill 场景个数 | 9（单一 skill：geoly-geo；4 自有侧 + 5 公开/行业情报） |
