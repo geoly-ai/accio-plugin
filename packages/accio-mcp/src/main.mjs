@@ -35,6 +35,18 @@ export async function main(argv) {
     await login();
     return;
   }
+  // 内部子命令（登录守护进程机制，勿在 help 暴露）：
+  // __login_spawn__ = 双重派生中间层；__login_helper__ = 常驻回调/换 token/写凭据的守护进程
+  if (cmd === '__login_spawn__') {
+    const { runLoginSpawner } = await import('./oauth.mjs');
+    runLoginSpawner();
+    return;
+  }
+  if (cmd === '__login_helper__') {
+    const { runLoginHelper } = await import('./oauth.mjs');
+    await runLoginHelper();
+    return;
+  }
   if (cmd === 'logout') {
     console.error(clearCredentials() ? '[geoly] Signed out.' : '[geoly] No stored session.');
     return;

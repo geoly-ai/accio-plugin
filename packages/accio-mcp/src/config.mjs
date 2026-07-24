@@ -18,3 +18,9 @@ export const CRED_FILE = join(CRED_DIR, 'credentials');
 export const CLIENT_NAME = 'geoly-accio-plugin';
 export const VERSION = pkg.version;
 export const OAUTH_SCOPE = 'openid profile email offline_access';
+
+// 登录守护进程(login helper)的握手文件：helper 上报回调端口 / login 下发一次性 OAuth 配置 /
+// helper 回报失败原因。均为瞬态文件，成功或超时后清理。
+export const LOGIN_HELPER_FILE = join(CRED_DIR, 'login-helper.json');
+export const LOGIN_CONFIG_FILE = join(CRED_DIR, 'login-config.json');
+export const LOGIN_ERROR_FILE = join(CRED_DIR, 'login-error.json');

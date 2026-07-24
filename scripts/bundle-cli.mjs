@@ -24,6 +24,11 @@ const bodies = [];
 
 /** 处理单个模块源码：剥 import/export、内联 VERSION、删动态本地 import。 */
 function processModule(src, isConfig) {
+  // 先把多行 named import 归一成单行，逐行过滤器才能整体识别删除
+  src = src.replace(
+    /import\s*\{([\s\S]*?)\}\s*from\s*(['"][^'"]+['"]);?/g,
+    (_, names, from) => `import { ${names.replace(/\s+/g, ' ').replace(/,\s*$/, '').trim()} } from ${from};`
+  );
   const out = [];
   for (let line of src.split('\n')) {
     const t = line.trim();

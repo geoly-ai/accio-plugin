@@ -1,6 +1,6 @@
 {
   "name": "@geoly/accio-mcp",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "GEOly connector CLI for Accio Work — browser OAuth login plus a stdio-to-Streamable-HTTP MCP bridge to app.geoly.ai",
   "type": "module",
   "bin": {
