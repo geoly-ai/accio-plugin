@@ -32,12 +32,31 @@ metric name) or **flow mistakes** (calling a brand tool before resolving which b
 This skill depends on the **GEOly connector** in this plugin. If the GEOly MCP tools (e.g.
 `list_brands`, `get_brand_overview`) are not reachable:
 
-1. Ask the user to open the **GEOly plugin detail page → App Authorization → Connect**. This runs
-   the GEOly sign-in in their browser (`npx -y @geoly/accio-mcp login` under the hood). It blocks
-   until they finish signing in — a slow return is normal, not a failure.
+1. Ask the user to open the **GEOly plugin detail page → App Authorization → Connect**. This opens
+   the GEOly sign-in in their browser and completes in the background — a slow return is normal, not
+   a failure. If a valid login already exists it reconnects instantly.
 2. Do **not** probe the endpoint by hand: an unauthorized raw HTTP request returns `401`, which is
    expected and proves nothing.
 3. Once connected, discover the tools with `accio-mcp-cli toolkit geoly` (bash) and continue.
+
+## Calling the tools (invocation rules — read before your first call)
+
+You reach GEOly tools through `accio-mcp-cli` (run `accio-mcp-cli --help` for its exact call
+syntax). Two rules that otherwise waste calls:
+
+- **Pass array / object parameters as one JSON string via `--json`, never as flags.** Flag-style
+  args are type-coerced (numbers/booleans get mangled, lists don't parse), so any tool taking a list
+  (`topic_ids`, `metrics`, `dimensions`, `brand_ids`, `public_brand_ids`, …) or a nested object
+  **fails** with flags. Give the whole argument object as one JSON string, e.g.
+  `--json '{"dataset":"topic_citations_daily","dimensions":["date"],"metrics":["aigvr","citationRate"],"start_date":"2026-05-28","end_date":"2026-06-26"}'`.
+  Scalar-only calls (`--time_range 30d`) are fine with flags, but when in doubt use `--json` for the
+  whole argument set.
+- **Heavy tools need more time than the default per-call timeout (~15s).** The citation-heavy tools
+  on large brands can exceed it — `get_citation_overview`, `get_brand_citations_daily`,
+  `query_analytics` over long ranges, and `compare_public_brands`. If your caller lets you set a
+  per-call timeout, raise it to **60s+** for these; otherwise make the query cheaper first — narrow
+  the date range and/or add a `platform` filter. A timeout is a "make it smaller / wait longer"
+  signal, not a dead end — don't abandon the analysis on the first timeout.
 
 ## Core Principles
 
