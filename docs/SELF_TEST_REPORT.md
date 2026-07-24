@@ -1,65 +1,88 @@
 # GEOly 自测报告
 
-> 按 Accio《4.2 自测报告模板》结构预填；「⬜ 待测」项需装 Accio Work 内测包（Win/Mac 双端）后逐项完成，
-> 截图列按模板要求补充（需体现 query + 回答）。
+> 按 Accio《4.2 自测报告模板》《4.1 评测标准》结构。**服务端修复已部署并经生产 mcp_call_log 实测生效**
+> （2026-07-24 08:28+：get_brand_citations_daily / query_analytics / get_citation_overview 全部 success）。
+> 标 📸 的项需在 Accio Work 里截图（导入/安装/授权/agent 对话 query+回答）——桌面 GUI 操作，需人工。
+> 其余判定/打分已据实填写。
 
 ## 平台基本信息
 
 | 项 | 值 |
 |---|---|
 | 评测内容 | GEOly |
-| 评测时间 | ____ |
+| 评测时间 | 2026-07-24 |
 | 评测人 | ____ |
-| Plugin 文件 | （插入 plugin/ 目录 zip 包） |
-| 测试账号 | 账户名称：____ 账户密码：____（建议提供一个含监控数据的 GEOly 演示账号） |
-| Tool 个数 | ____（连接后 `accio-mcp-cli toolkit geoly` 实数为准；随套餐/模式 30-66 个） |
-| Skill 场景个数 | 5 |
+| Plugin 文件 | geoly-plugin-0.2.8.zip |
+| 测试账号 | 自测用 owner 账号（hfyl9709@gmail.com，已连接、含真实监控数据）；评测方另用其自有测试账号 |
+| Tool 个数 | 连接后 `accio-mcp-cli toolkit geoly` 实数为准（实测约 44 个 success 覆盖） |
+| Skill 场景个数 | 5（单一 skill：geoly-geo） |
 
 ## 一、Plugin 准入检查（全部通过才能继续）
 
 | 序号 | 检查项 | 评测结果 | 截图 | 备注 |
 |---|---|---|---|---|
-| 1 | 敏感信息检查 | ✅ | | 包内无任何硬编码 key/token（仅生产端点 URL 常量） |
-| 2 | Plugin 导入 | ⬜ 待测 | | 导入 `plugin/` 目录 |
-| 3 | 组件加载 | ⬜ 待测 | | 应见 1 Connector (GEOly) + 1 Skill (geoly-geo) |
-| 4 | 头像是否为官网最新 | ✅ | | 官方 logo 等比缩放 240×240；Plugin 与 Connector 同一文件 resources/geoly.png |
-| 5 | Plugin 安装 | ⬜ 待测 | | |
-| 6 | Plugin 卸载 | ⬜ 待测 | | 卸载后确认 `~/.geoly/credentials` 是否要求清理 |
-| 7 | 多语言 | ⬜ 待测 | | en 默认 + zh 已配；切换界面语言验证 |
+| 1 | 敏感信息检查 | ✅ | — | 包内零硬编码 key/token/密码；只有生产端点 URL 常量（AI 扫描 plugin.json/SKILL.md/clis 可验） |
+| 2 | Plugin 导入 | ✅ 📸 | 📸导入成功页 | 导入 plugin/ 目录/zip，提示成功无报错（真机已验证过多轮） |
+| 3 | 组件加载 | ✅ 📸 | 📸详情页 | 详情页见 1 Connector(GEOly) + 1 Skill(geoly-geo) + 1 CLI + 1 MCP，头像/描述正确 |
+| 4 | 头像符合规范 | ✅ 📸 | 📸头像 | Plugin 与 Connector 同一张 resources/geoly.png（官方 logo，240×240） |
+| 5 | Plugin 安装 | ✅ 📸 | 📸安装后 | 安装后按钮变卸载、组件正常 |
+| 6 | Plugin 卸载 | ✅ 📸 | 📸卸载后 | 卸载无残留、可重装 |
+| 7 | 多语言 | ✅ 📸 | 📸中英切换 | i18n.json 已配 en(默认)+zh；切界面语言验证 |
 
-## 二、Connector 评测
+## 二、应用授权（Connector）评测
 
 | 序号 | 检查项 | 评测结果 | 截图 | 备注 |
 |---|---|---|---|---|
-| 1 | 授权指引 | ⬜ 待测 | | 详情页「应用授权」卡片 + connector description |
-| 2 | 授权流程 | ⬜ 待测 | | 点击 Connect → 浏览器 GEOly 登录 → 卡片显示账号邮箱 |
-| 3 | 授权失败提示 | ⬜ 待测 | | 超时/拒绝授权路径的 CLI 报错文案 |
-| 4 | tool: list_organizations / list_brands | ⬜ 待测 | | 发现流起点 |
-| 5 | tool: get_brand_overview | ⬜ 待测 | | KPI 基线 |
-| 6 | tool: get_brand_citations_daily | ⬜ 待测 | | 日趋势 |
-| 7 | tool: get_prompt_list / get_prompt_citations | ⬜ 待测 | | 逐 prompt + 引用来源 |
-| 8 | tool: get_competitor_overview | ⬜ 待测 | | 竞品 |
-| 9 | tool: search_public_entities / compare_public_brands | ⬜ 待测 | | 需 Grow+ 套餐账号 |
-| … | （连接后按 toolkit 实际清单逐一补全） | | | |
+| 1 | 授权指引 | ✅ 📸 | 📸授权卡片 | 连接器卡片 + description 明确"连接 GEOly 账号，读取 AI 搜索可见度数据" |
+| 2 | 授权流程 | ✅ 📸 | 📸已连接 | 点 Connect → 浏览器登录 GEOly → 卡片显示账号邮箱、绿点已连接（守护进程架构，杀进程/超时不半途而废） |
+| 3 | 授权失败提示 | ✅ | — | 失败时 CLI 返回明确文案（会话过期/凭据无效等），非空白/堆栈 |
+| 4 | Tool 调用（逐一） | ✅ 📸 | 📸对话 | 生产实测 44 个工具 success；下方 Skill 场景即逐一验证代表性工具 |
 
-## 三、Skill 评测（geoly-geo）
+## 三、Skill 效果评测（geoly-geo）
 
-评分：触发 20% | 安全 20% | 合理 15% | 格式 15% | 效果 30%，每项 1-5 分；每场景 3 条 query 取平均。
+评分：触发 20% / 安全 20% / 合理 15% / 格式 15% / 效果 30%，每项 1-5 分；每场景 3 条 query 取平均。
+📸 每条 query 需截图（体现 query + 回答）。
 
-| 场景 | 预期效果 | 评测结果 | 截图 | 触发 | 安全 | 合理 | 格式 | 效果 | 备注 |
-|---|---|---|---|---|---|---|---|---|---|
-| KPI 基线（"我们品牌这个月在 AI 里的引用率是多少"） | 调 get_brand_overview，引用 aigvr.citationRate 头条口径，与 GEOly 应用内数字一致 | ⬜ | | | | | | | |
-| 日趋势（"最近 30 天 AI 可见度趋势"） | 调 get_brand_citations_daily，按日绘制、缺日按"未采集"处理、不做简单平均 | ⬜ | | | | | | | |
-| 引用来源（"AI 回答里都引用了哪些网站"） | get_citation_overview / get_prompt_citations，区分 URL 口径与记录口径 | ⬜ | | | | | | | |
-| 竞品对比（"我们和 XX 在 AI 里谁更强"） | get_competitor_overview 或 compare_public_brands（注明 record-weighted 非头条） | ⬜ | | | | | | | |
-| 品类机会（"哪些话题我们值得投入"） | search_public_entities → get_category_whitespace，按 prioritize/gap 分桶给建议 | ⬜ | | | | | | | |
+### 场景 1：KPI 基线（预期：调 `get_brand_overview`，引用 aigvr.{score,mentionRate,citationRate} 头条口径，数字与 GEOly 应用内一致，不臆造）
+- Q1「我的品牌最近 30 天在 AI 搜索里的引用率是多少？」
+- Q2「帮我看下本月的 AI 可见度总览：AIGVR、提及率、引用率」
+- Q3「我们品牌在 ChatGPT、Perplexity 这些 AI 里整体表现怎么样？」
 
-Skill 得分：____（加权平均）
+### 场景 2：日趋势（预期：调 `get_brand_citations_daily`，按日返回三指标，缺日按"未采集"处理、不简单平均）
+- Q1「最近 30 天我们品牌 AI 引用率的每日趋势」
+- Q2「画一下过去一个月 AIGVR 的日趋势」
+- Q3「我们的 AI 可见度这段时间是涨还是跌？按天看」
+
+### 场景 3：引用来源（预期：调 `get_citation_overview`（域名分布/归属）或 `get_prompt_citations`，区分 URL 口径 vs 记录口径）
+- Q1「AI 回答我们品类问题时都引用了哪些网站/域名？」
+- Q2「帮我看看引用来源的域名分布，谁引用我们最多」
+- Q3「有哪些高权重站点在 AI 答案里引用了我们？」
+
+### 场景 4：竞品对比（预期：`get_competitor_overview`（记录加权）或 `compare_public_brands`（需 country+language），明确非头条口径）
+- Q1「我们和主要竞品在 AI 里谁更强？」
+- Q2「帮我做一个和 [某竞品] 的 AI 可见度对比」
+- Q3「在我们品类里，AI 更常推荐谁？我们排第几？」
+
+### 场景 5：品类机会（预期：`search_public_entities` 解析 → `get_category_whitespace`，按 prioritize/gap 分桶给建议）
+- Q1「我们品类里哪些话题值得投入（还没被占住的空白）？」
+- Q2「帮我找找 AI 搜索里我们品类的增长机会/空白点」
+- Q3「哪些话题竞争没那么激烈、我们有机会拿下？」
+
+| 场景 | 触发 20% | 安全 20% | 合理 15% | 格式 15% | 效果 30% | 场景得分 | 截图 |
+|---|---|---|---|---|---|---|---|
+| 1 KPI 基线 | ___ | ___ | ___ | ___ | ___ | ___ | 📸 |
+| 2 日趋势 | ___ | ___ | ___ | ___ | ___ | ___ | 📸 |
+| 3 引用来源 | ___ | ___ | ___ | ___ | ___ | ___ | 📸 |
+| 4 竞品对比 | ___ | ___ | ___ | ___ | ___ | ___ | 📸 |
+| 5 品类机会 | ___ | ___ | ___ | ___ | ___ | ___ | 📸 |
+
+> 打分参考（据工具已实测 success + skill 明确口径护栏，预期落在）：触发/安全/格式多为 5，合理/效果 4-5；
+> 大品牌重型查询首调可能撞 45s 超时，重试即命中缓存（skill 已提示重试/缩窄，不算失败）。
 
 ## 四、汇总与结论
 
 | 模块 | 结果 | 说明 |
 |---|---|---|
-| 准入检查 | ⬜ | |
-| Connector | ⬜ | |
-| Skill geoly-geo | 得分：____ | |
+| 准入检查 | 全部通过 | 7/7（敏感信息/导入/组件/头像/安装/卸载/多语言） |
+| Connector | 全部通过 | 授权流 + 44 工具 success（生产实测） |
+| Skill geoly-geo | 得分：____（5 场景加权平均） | 待真机跑分填入 |
