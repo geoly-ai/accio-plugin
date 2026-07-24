@@ -10,9 +10,9 @@
 |---|---|
 | 评测内容 | GEOly |
 | 评测时间 | 2026-07-24 |
-| 评测人 | Noah Buyer（Accio 操作账号）；GEOly 连接账号 hfyl9709@gmail.com（本工作区含 Apple 受监控数据） |
+| 评测人 | Noah Buyer（Accio 操作账号）；GEOly 连接账号 it@rijoy.ai（本工作区含 Apple 受监控数据） |
 | Plugin 文件 | geoly-plugin-0.2.9.zip（0.2.8 上加"输出用 Markdown、禁 HTML"，对应发现 1；Skill 逻辑与截图一致） |
-| 测试账号 | 自测用 owner 账号（hfyl9709@gmail.com，已连接、Grow+、含真实监控数据）；评测方另用其自有测试账号 |
+| 测试账号 | 自测所用账号（it@rijoy.ai，已连接、Grow+、含真实监控数据）；评测方可另用其自有测试账号 |
 | Tool 个数 | 连接后 `accio-mcp-cli toolkit geoly` 实数为准（实测约 44 个 success 覆盖，含 self + public 两面） |
 | Skill 场景个数 | 9（单一 skill：geoly-geo；4 自有侧 + 5 公开/行业情报） |
 
@@ -126,7 +126,7 @@
   口径差异并指出取精确 AIGVR 应调 `get_brand_overview`，属可接受的口径选择。
 - **发现 3（性能残留，已缓解）**：场景 2 有一次 citations 类工具超时，agent **优雅降级**改用公共可见度趋势数据完成回答（未失败）；
   部分场景耗时 3–4 分钟（多工具编排 + 报告生成）。45s override + 缓存补种已消除硬超时，重型引用查询首调仍偏慢，
-  rollup 根治在档（[[citation-overview-perf-todo]]）。
+  rollup 根治已在内部性能优化排期。
 
 ## 四、汇总与结论
 
