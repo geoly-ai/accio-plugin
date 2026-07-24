@@ -15,7 +15,7 @@
       "cli": {
         "discover": "npx",
         "auth": {
-          "npmPackage": "@geoly/accio-mcp@0.2.0",
+          "npmPackage": "@geoly/accio-mcp@0.1.0",
           "loginArgs": ["login"]
         },
         "credential": {
@@ -24,7 +24,7 @@
         },
         "mcpServer": {
           "name": "geoly",
-          "npmPackage": "@geoly/accio-mcp@0.2.0"
+          "npmPackage": "@geoly/accio-mcp@0.1.0"
         },
         "fallbackLabel": "GEOly account"
       }
