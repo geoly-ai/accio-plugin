@@ -57,9 +57,15 @@ async function registerClient(meta, redirectUri) {
  * 失败不抛错：授权 URL 已经显著打印，用户可手动打开。返回是否成功派发。
  */
 function openBrowser(url) {
+  // ⚠️ Windows 不能裸走 `cmd /c start <url>`：URL 里的 & 是 cmd 元字符，会把 URL 在
+  // 第一个 & 处截断（authorize 链接丢 client_id → invalid_client，实测复现）。
+  // 首选 rundll32（不经 shell 解析，URL 原样传），cmd start 兜底时必须 ^ 转义 &。
   const candidates =
     process.platform === 'win32'
-      ? [['cmd', ['/c', 'start', '', url]]]
+      ? [
+          ['rundll32', ['url.dll,FileProtocolHandler', url]],
+          ['cmd', ['/c', 'start', '', url.replace(/&/g, '^&')]],
+        ]
       : process.platform === 'darwin'
         ? [['/usr/bin/open', [url]], ['open', [url]]]
         : [['/usr/bin/xdg-open', [url]], ['xdg-open', [url]]];
