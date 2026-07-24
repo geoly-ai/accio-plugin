@@ -13,7 +13,7 @@
       "exposure": "all-agents",
       "source": {
         "type": "node-cli",
-        "entry": "clis/geoly/bin/cli.mjs",
+        "entry": "clis/geoly.mjs",
         "commandName": "geoly-accio-mcp",
         "moduleFormat": "esm"
       }

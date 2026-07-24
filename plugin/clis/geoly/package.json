@@ -1,8 +1,0 @@
-{
-  "name": "@geoly/accio-mcp",
-  "version": "0.2.0",
-  "type": "module",
-  "bin": {
-    "geoly-accio-mcp": "bin/cli.mjs"
-  }
-}
