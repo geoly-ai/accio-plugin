@@ -20,7 +20,7 @@ const MCP_URL = `${BASE_URL}/api/mcp`;
 const CRED_DIR = join(homedir(), '.geoly');
 const CRED_FILE = join(CRED_DIR, 'credentials');
 const CLIENT_NAME = 'geoly-accio-plugin';
-const VERSION = "0.2.1";
+const VERSION = "0.2.2";
 const OAUTH_SCOPE = 'openid profile email offline_access';
 
 // ==== credentials.mjs ====
@@ -164,11 +164,37 @@ async function tokenRequest(tokenEndpoint, params) {
 }
 
 /**
+ * 幂等预检：本地凭据仍有效（或可用 refresh_token 换新）就直接成功返回，不再走浏览器。
+ * 价值：宿主(Accio)对登录进程可能有超时会中途处决——用户重试时若上一轮授权其实已完成
+ * 或凭据本就在，这里秒过，不用重新授权。
+ */
+async function tryExistingCredentials() {
+  const creds = loadCredentials();
+  if (!creds?.access_token) return false;
+  if (creds.expires_at && creds.expires_at - Date.now() > 60_000) {
+    console.error(`[geoly] Already signed in as ${creds.account}.`);
+    return true;
+  }
+  if (creds.refresh_token && creds.token_endpoint) {
+    try {
+      const next = await refreshCredentials(creds);
+      console.error(`[geoly] Session refreshed for ${next.account}.`);
+      return true;
+    } catch {
+      /* 刷新失败 → 走完整浏览器流 */
+    }
+  }
+  return false;
+}
+
+/**
  * 登录主流程：起 loopback 回调服务 → 发现端点 → DCR 注册 → 开浏览器授权(PKCE S256)
  * → 授权码换 token → 取用户身份(id_token 优先, userinfo 兜底) → 写 ~/.geoly/credentials。
  * 凭据文件顶层 account/email 明文是 Accio 授权卡片账号标签的硬契约。
  */
 async function login() {
+  if (await tryExistingCredentials()) return;
+
   const meta = await discoverAuthServer();
 
   const verifier = b64url(randomBytes(32));
