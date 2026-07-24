@@ -1,0 +1,22 @@
+{
+  "tools": [
+    {
+      "id": "geoly",
+      "displayName": "GEOly CLI",
+      "description": "GEOly 连接器 CLI —— 浏览器登录 GEOly 账号，并把 GEOly 远程 MCP（品牌 AI 可见度、引用分析、竞品与公开行业情报）桥接为本地 stdio MCP。",
+      "usageExamples": [
+        "geoly-accio-mcp --version",
+        "geoly-accio-mcp login",
+        "geoly-accio-mcp status"
+      ],
+      "verifyArgs": ["--version"],
+      "exposure": "all-agents",
+      "source": {
+        "type": "npm-package",
+        "packageName": "@geoly/accio-mcp",
+        "version": "0.2.0",
+        "binName": "geoly-accio-mcp"
+      }
+    }
+  ]
+}

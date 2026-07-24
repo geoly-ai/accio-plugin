@@ -51,19 +51,29 @@ async function registerClient(meta, redirectUri) {
   return res.json();
 }
 
-/** 跨平台打开浏览器；失败不抛错（终端里已打印 URL 兜底）。 */
+/**
+ * 跨平台打开浏览器。用绝对路径调系统 opener（macOS 的 /usr/bin/open、Windows 的
+ * cmd）——被 Accio 这类 GUI App 以受限 PATH 的子进程拉起时，相对命令名可能解析不到。
+ * 失败不抛错：授权 URL 已经显著打印，用户可手动打开。返回是否成功派发。
+ */
 function openBrowser(url) {
-  const [cmd, args] =
+  const candidates =
     process.platform === 'win32'
-      ? ['cmd', ['/c', 'start', '""', url.replace(/&/g, '^&')]]
+      ? [['cmd', ['/c', 'start', '', url]]]
       : process.platform === 'darwin'
-        ? ['open', [url]]
-        : ['xdg-open', [url]];
-  try {
-    spawn(cmd, args, { stdio: 'ignore', detached: true }).unref();
-  } catch {
-    /* URL 已打印，忽略 */
+        ? [['/usr/bin/open', [url]], ['open', [url]]]
+        : [['/usr/bin/xdg-open', [url]], ['xdg-open', [url]]];
+  for (const [cmd, args] of candidates) {
+    try {
+      const child = spawn(cmd, args, { stdio: 'ignore', detached: true });
+      child.on('error', () => {});
+      child.unref();
+      return true;
+    } catch {
+      /* 试下一个候选 */
+    }
   }
+  return false;
 }
 
 /** 解 JWT payload（不验签——仅取展示用的 email/name；数据面鉴权在服务端）。 */
@@ -125,9 +135,17 @@ export async function login() {
       resource: MCP_URL,
     }).toString();
 
-    console.error('[geoly] Opening your browser to sign in to GEOly…');
-    console.error(`[geoly] If it does not open, visit:\n${authUrl}`);
-    openBrowser(authUrl.toString());
+    // 显著打印授权 URL 到 stdout 和 stderr：即便自动弹窗被 GUI 宿主的沙箱/PATH 拦掉，
+    // Accio 或用户也能从日志里拿到链接手动打开。
+    const banner = `\n========================================\nSign in to GEOly — open this URL in your browser:\n${authUrl}\n========================================\n`;
+    process.stdout.write(banner);
+    console.error(banner);
+    const opened = openBrowser(authUrl.toString());
+    console.error(
+      opened
+        ? '[geoly] Opened your default browser. Complete sign-in there.'
+        : '[geoly] Could not auto-open a browser — please open the URL above manually.'
+    );
 
     const code = await waitForCode;
 
