@@ -1,7 +1,7 @@
 # GEOly plugin guide
 
 This plugin provides **read access to GEOly** (https://www.geoly.ai) — AI search visibility
-analytics: how a brand is mentioned and cited in ChatGPT, Perplexity, Gemini, Grok and Google AI
+analytics: how a brand is mentioned and cited in ChatGPT, Perplexity, Google AI Mode, Google AI Overview, Gemini and Copilot
 answers.
 
 Routing rules:

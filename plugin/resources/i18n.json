@@ -3,10 +3,10 @@
   "defaultLocale": "en",
   "entries": {
     "plugin.description": {
-      "zh": "GEOly 把你的 Agent 连接到 GEOly GEO（生成式引擎优化）平台——测量品牌在 ChatGPT、Perplexity、Gemini、Grok、Google AI 回答中的可见度。追踪品牌提及、引用率、AIGVR 与 Share of Model，监测每日 AI 可见度趋势，对标竞品，发现品类空白与增长品牌，分析用户在 AI 里怎么问你的品类，并审计站点 AI 就绪度。数据来自你的 GEOly 工作区的实时 MCP 工具，报告引用真实可见度数字而非猜测。"
+      "zh": "GEOly 把你的 Agent 连接到 GEOly GEO（生成式引擎优化）平台——测量品牌在 ChatGPT、Perplexity、Google AI Mode、Google AI Overview、Gemini、Copilot 回答中的可见度。追踪品牌提及、引用率、AIGVR 与 Share of Model，监测每日 AI 可见度趋势，对标竞品，发现品类空白与增长品牌，分析用户在 AI 里怎么问你的品类，并审计站点 AI 就绪度。数据来自你的 GEOly 工作区的实时 MCP 工具，报告引用真实可见度数字而非猜测。"
     },
     "plugin.longDescription": {
-      "zh": "## GEOly 是什么\n\nGEOly 追踪品牌在 AI 引擎（ChatGPT、Gemini、Perplexity、Grok、Google AI）中被提及与引用的情况——AI 搜索时代的 GEO（生成式引擎优化）分析层。\n\n连接 GEOly 账号后，任意 Agent 可以：\n\n- **测量 AI 可见度**：品牌总览 KPI（AIGVR、提及率、引用率）、每日趋势、逐 prompt 下钻\n- **追溯引用**：AI 引擎回答你品类问题时引用了哪些 URL 与域名\n- **对标竞品**：按记录加权的竞品矩阵与公开品牌一对一对比\n- **发现机会**：品类空白、品牌动量、AI 搜索需求、话题竞争难度\n- **审计 AI 就绪度**：站点在可访问性、结构化数据、内容结构与技术项上的审计结果\n\n## 使用要求\n\n需要 GEOly 账号。公开/行业情报工具需要 Grow 及以上套餐。内置 `geoly-geo` 技能会让 Agent 使用正确的指标口径，保证引用的数字与 GEOly 应用内一致。"
+      "zh": "## GEOly 是什么\n\nGEOly 追踪品牌在 AI 引擎（ChatGPT、Perplexity、Google AI Mode、Google AI Overview、Gemini、Copilot）中被提及与引用的情况——AI 搜索时代的 GEO（生成式引擎优化）分析层。\n\n连接 GEOly 账号后，任意 Agent 可以：\n\n- **测量 AI 可见度**：品牌总览 KPI（AIGVR、提及率、引用率）、每日趋势、逐 prompt 下钻\n- **追溯引用**：AI 引擎回答你品类问题时引用了哪些 URL 与域名\n- **对标竞品**：按记录加权的竞品矩阵与公开品牌一对一对比\n- **发现机会**：品类空白、品牌动量、AI 搜索需求、话题竞争难度\n- **审计 AI 就绪度**：站点在可访问性、结构化数据、内容结构与技术项上的审计结果\n\n## 使用要求\n\n需要 GEOly 账号。公开/行业情报工具需要 Grow 及以上套餐。内置 `geoly-geo` 技能会让 Agent 使用正确的指标口径，保证引用的数字与 GEOly 应用内一致。"
     },
     "skill.geoly-geo.name": {
       "zh": "GEOly AI 可见度"
@@ -16,7 +16,7 @@
     },
     "skill.geoly-geo.display.summary.key": { "zh": "AI 搜索可见度分析" },
     "skill.geoly-geo.display.summary.value": {
-      "zh": "测量品牌在 ChatGPT、Perplexity、Gemini、Grok、Google AI 回答中的表现——提及、引用、AIGVR 与 Share of Model，数据实时来自你的 GEOly 工作区。"
+      "zh": "测量品牌在 ChatGPT、Perplexity、Google AI Mode、Google AI Overview、Gemini、Copilot 回答中的表现——提及、引用、AIGVR 与 Share of Model，数据实时来自你的 GEOly 工作区。"
     },
     "skill.geoly-geo.display.kpi.key": { "zh": "核心 KPI 与趋势" },
     "skill.geoly-geo.display.kpi.value": {

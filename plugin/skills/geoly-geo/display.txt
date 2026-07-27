@@ -3,7 +3,7 @@
     "id": "summary",
     "type": "summary",
     "key": "AI search visibility analytics",
-    "value": "Measures how a brand shows up in ChatGPT, Perplexity, Gemini, Grok and Google AI answers — mentions, citations, AIGVR and Share of Model — live from your GEOly workspace."
+    "value": "Measures how a brand shows up in ChatGPT, Perplexity, Google AI Mode, Google AI Overview, Gemini and Copilot answers — mentions, citations, AIGVR and Share of Model — live from your GEOly workspace."
   },
   {
     "id": "kpi",

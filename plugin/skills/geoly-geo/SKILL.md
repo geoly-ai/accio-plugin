@@ -1,7 +1,7 @@
 ---
 name: geoly-geo
 displayName: GEOly AI Visibility
-description: "Use when querying or reporting on AI brand visibility through the GEOly MCP tools — picking the right tool, following the org/brand discovery flow, quoting the correct KPI caliber, and avoiding metric-definition pitfalls. Use for: GEO / generative engine optimization, AI search visibility, brand mentions and citations in ChatGPT / Perplexity / Gemini / Grok / Google AI answers, citation rate, mention rate, AIGVR, Share of Model, competitor benchmarking, category whitespace, brand momentum, AI search query demand, site AI-readiness audit. 中文：AI 搜索可见度、品牌在 AI 回答中的提及与引用、GEO 优化、引用率、提及率、AI 排名监测、竞品对比。Do NOT use for classic web SEO keyword rankings, backlink analysis, or paid-ads analytics — GEOly measures AI-answer visibility, not search-engine result pages."
+description: "Use when querying or reporting on AI brand visibility through the GEOly MCP tools — picking the right tool, following the org/brand discovery flow, quoting the correct KPI caliber, and avoiding metric-definition pitfalls. Use for: GEO / generative engine optimization, AI search visibility, brand mentions and citations in ChatGPT / Perplexity / Google AI Mode / Google AI Overview / Gemini / Copilot answers, citation rate, mention rate, AIGVR, Share of Model, competitor benchmarking, category whitespace, brand momentum, AI search query demand, site AI-readiness audit. 中文：AI 搜索可见度、品牌在 AI 回答中的提及与引用、GEO 优化、引用率、提及率、AI 排名监测、竞品对比。Do NOT use for classic web SEO keyword rankings, backlink analysis, or paid-ads analytics — GEOly measures AI-answer visibility, not search-engine result pages."
 version: "0.1.1"
 tool_triggers:
   - tool: bash
@@ -17,8 +17,8 @@ tool_triggers:
 
 # GEOly AI Visibility
 
-[GEOly](https://www.geoly.ai) tracks how brands are mentioned and cited across AI engines (ChatGPT, Gemini,
-Perplexity, Grok, Google AI). The GEOly MCP server exposes **up to 67 tools** (the exact set depends
+[GEOly](https://www.geoly.ai) tracks how brands are mentioned and cited across AI engines (ChatGPT,
+Perplexity, Google AI Mode, Google AI Overview, Gemini, Copilot). The GEOly MCP server exposes **up to 67 tools** (the exact set depends
 on plan, mode, and write profile) across two surfaces:
 
 - **Self / brand-own** — the customer's own monitoring, audits, GA4, and write actions.
