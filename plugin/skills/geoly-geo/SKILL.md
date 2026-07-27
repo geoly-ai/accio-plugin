@@ -18,7 +18,7 @@ tool_triggers:
 # GEOly AI Visibility
 
 [GEOly](https://www.geoly.ai) tracks how brands are mentioned and cited across AI engines (ChatGPT, Gemini,
-Perplexity, Grok, Google AI). The GEOly MCP server exposes **up to 66 tools** (the exact set depends
+Perplexity, Grok, Google AI). The GEOly MCP server exposes **up to 67 tools** (the exact set depends
 on plan, mode, and write profile) across two surfaces:
 
 - **Self / brand-own** — the customer's own monitoring, audits, GA4, and write actions.
