@@ -14,7 +14,7 @@ plugin/                     # Accio Work 插件包（评测时导入/打 zip 的
 ├── prompt.md               # 插件级引导（被 Agent 引用时拼进 system prompt）
 ├── connectors/connectors.json  # cli-login Connector 完整定义（三方标准路径）
 ├── skills/geoly-geo/       # SKILL.md + display.txt + references/（自 geoly-app/geoly-mcp 移植）
-└── resources/              # geoly.png (240×240) + i18n.json (en 默认 + zh)
+└── resources/              # geoly.png (240×240) + i18n.json (en 默认 + zh / zh-TW)
 packages/accio-mcp/         # @geoly/accio-mcp npm 包：login CLI + stdio↔远程 MCP 桥
 docs/                       # 自测报告模板、接入决策记录
 ```
@@ -41,6 +41,7 @@ docs/                       # 自测报告模板、接入决策记录
 npm 包本体可独立冒烟：
 
 ```bash
+node scripts/validate-i18n.mjs
 node packages/accio-mcp/bin/cli.mjs --version
 node packages/accio-mcp/bin/cli.mjs status
 GEOLY_API_KEY=geom_xxx node packages/accio-mcp/bin/cli.mjs   # stdio 桥（echo JSON-RPC 进 stdin）

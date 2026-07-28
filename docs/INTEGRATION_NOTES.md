@@ -14,7 +14,7 @@
 | MCP 接入 | npm 包内置 stdio↔远程 Streamable HTTP 桥 | GEOly 远程 MCP 无状态、仅 POST（GET/DELETE→405）；桥为纯请求-响应转发，处理 JSON 与 SSE 两种响应格式 |
 | 静态 token | `GEOLY_API_KEY`（geom_ 只读）优先于 OAuth | headless/CI 兜底，零服务端改造 |
 | 品牌写法 | **GEOly**（owner 拍板 2026-07-21） | 02 文档跨位置一致性强制 |
-| i18n | defaultLocale=en + zh 翻译 | 3.1 手册 entries v1.0 格式；13 语言后续按需补 |
+| i18n | defaultLocale=en + zh / zh-TW 翻译 | 2.1 手册 entries v1.0 格式；CLI 使用 `cli.{id}.name`；其余 10 种语言后续按需补 |
 
 ## 版本钉死约定
 
@@ -45,7 +45,8 @@ plugin.json。
 ## 评测准备（对照 4.1）
 
 - 第一层准入：无硬编码密钥（本包只有端点 URL 常量）✅ / JSON 全部通过本地 `JSON.parse` ✅ /
-  头像 240×240 官方 logo ✅ / i18n 已配 ✅ —— 导入/安装/卸载三项待测试包实测。
+  头像 240×240 官方 logo ✅ / i18n 覆盖 en / zh / zh-TW 的 Plugin、Skill、CLI、Connector
+  展示字段 ✅ —— 导入/安装/卸载三项待测试包实测。
 - 第二层授权：授权指引=connector `description` + skill Prerequisites；失败提示=login CLI 的
   明确报错文案；tool 逐一测试待联调（工具数取决于账号套餐/模式）。
 - 第三层 Skill：建议场景（自测报告模板已预填）——KPI 基线查询、日趋势、引用来源、竞品对比、
