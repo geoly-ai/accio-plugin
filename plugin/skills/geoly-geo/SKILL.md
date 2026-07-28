@@ -2,7 +2,7 @@
 name: geoly-geo
 displayName: GEOly AI Visibility
 description: "Use when querying or reporting on AI brand visibility through the GEOly MCP tools — picking the right tool, following the org/brand discovery flow, quoting the correct KPI caliber, and avoiding metric-definition pitfalls. Use for: GEO / generative engine optimization, AI search visibility, brand mentions and citations in ChatGPT / Perplexity / Google AI Mode / Google AI Overview / Gemini / Copilot answers, citation rate, mention rate, AIGVR, Share of Model, competitor benchmarking, category whitespace, brand momentum, AI search query demand, site AI-readiness audit. Chinese trigger terms include: AI 搜索可见度、品牌在 AI 回答中的提及与引用、GEO 优化、引用率、提及率、AI 排名监测、竞品对比。 Do NOT use for classic web SEO keyword rankings, backlink analysis, or paid-ads analytics — GEOly measures AI-answer visibility, not search-engine result pages."
-version: "0.1.1"
+version: "0.1.2"
 tool_triggers:
   - tool: bash
     args:
@@ -27,17 +27,30 @@ on plan, mode, and write profile) across two surfaces:
 The data is correct; **most mistakes are caliber mistakes** (mixing aggregations of the same
 metric name) or **flow mistakes** (calling a brand tool before resolving which brand).
 
-## Prerequisites
+## Prerequisites and access recovery
 
 This skill depends on the **GEOly connector** in this plugin. If the GEOly MCP tools (e.g.
-`list_brands`, `get_brand_overview`) are not reachable:
+`list_brands`, `get_brand_overview`) are missing entirely, ask the user to open the **GEOly plugin
+detail page → App Authorization → Connect**. The browser flow may take time while the user signs in,
+finishes workspace setup, and reviews authorization; waiting is not a failure. Once connected,
+discover the tools with `accio-mcp-cli toolkit geoly` (bash) and continue.
 
-1. Ask the user to open the **GEOly plugin detail page → App Authorization → Connect**. This opens
-   the GEOly sign-in in their browser and completes in the background — a slow return is normal, not
-   a failure. If a valid login already exists it reconnects instantly.
-2. Do **not** probe the endpoint by hand: an unauthorized raw HTTP request returns `401`, which is
-   expected and proves nothing.
-3. Once connected, discover the tools with `accio-mcp-cli toolkit geoly` (bash) and continue.
+If a GEOly tool is available but a call fails, classify the error before taking any authorization
+action. Never turn every access error into a login loop:
+
+| Error signal | Meaning | Correct recovery |
+|---|---|---|
+| `AUTH_REQUIRED`, HTTP 401, or an explicitly unauthenticated message | OAuth credentials are missing or invalid | Open **GEOly plugin detail → App Authorization → Connect**, complete browser authorization, then retry once |
+| `MCP_SETUP_REQUIRED` | The signed-in user has not completed GEOly workspace onboarding | Continue the GEOly browser setup opened by authorization, finish onboarding, then review the consent screen; do not start another login loop |
+| `SUBSCRIPTION_REQUIRED`, `SUBSCRIPTION_INACTIVE`, or HTTP 402 | No selected organization has an active entitlement | Send the user to `https://app.geoly.ai/settings/billing`; do not re-login |
+| `ORGANIZATION_REQUIRED` | GEOly could not find or prepare a usable organization | Ask the user to create or join an organization, or contact GEOly support; do not re-login |
+| `ORG_SELECTION_REQUIRED` | The saved organization scope is invalid or contains unavailable organizations | Restart **App Authorization → Connect** and explicitly choose one active organization; do not ask the user to sign up again |
+| Timeout or connection failure without an auth code | The client or network transport failed | Retry once, then inspect the connector/client state; do not assume an auth failure |
+
+Do **not** probe the endpoint by hand: an unauthorized raw HTTP request returns `401`, which is
+expected and proves nothing. Only `AUTH_REQUIRED`, HTTP 401, an explicit unauthenticated message, or
+tools missing entirely should trigger **Connect** as a login recovery. Setup, subscription,
+organization, selection, and transport failures require their specific recovery above.
 
 ## Calling the tools (invocation rules — read before your first call)
 
