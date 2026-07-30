@@ -3,9 +3,10 @@
     {
       "id": "geoly",
       "displayName": "GEOly CLI",
-      "description": "GEOly connector CLI — sign in to your GEOly account in a browser and bridge the GEOly remote MCP (brand AI visibility, citation analysis, competitor benchmarks, and public industry intelligence) to a local stdio MCP. Bundled with the plugin with no external dependencies; it runs on Accio's built-in Node.js runtime and does not download packages from npm.",
+      "description": "GEOly CLI — sign in to your GEOly account in a browser, then call GEOly tools (brand AI visibility, citation analysis, competitor benchmarks, and public industry intelligence) directly: `geoly-accio-mcp tools` lists them, `geoly-accio-mcp call <tool> --json '<args>'` invokes one. Bundled with the plugin with no external dependencies; it runs on Accio's built-in Node.js runtime and does not download packages from npm.",
       "usageExamples": [
-        "geoly-accio-mcp --version",
+        "geoly-accio-mcp tools",
+        "geoly-accio-mcp call get_brand_overview --json '{\"time_range\":\"30d\"}'",
         "geoly-accio-mcp login",
         "geoly-accio-mcp status"
       ],

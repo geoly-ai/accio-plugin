@@ -59,8 +59,8 @@
       "zh-TW": "GEOly CLI"
     },
     "cli.geoly.description": {
-      "zh": "GEOly 连接器 CLI——通过浏览器登录 GEOly 账号，并把 GEOly 远程 MCP（品牌 AI 可见度、引用分析、竞品对标与公开行业情报）桥接为本地 stdio MCP。它随插件打包、无外部依赖，使用 Accio 内置的 Node.js 运行时，不从 npm 下载软件包。",
-      "zh-TW": "GEOly 連接器 CLI——透過瀏覽器登入 GEOly 帳號，並把 GEOly 遠端 MCP（品牌 AI 能見度、引用分析、競品對標與公開產業情報）橋接為本機 stdio MCP。它隨外掛程式打包、無外部相依套件，使用 Accio 內建的 Node.js 執行環境，不會從 npm 下載套件。"
+      "zh": "GEOly CLI——通过浏览器登录 GEOly 账号，然后直接调用 GEOly 工具（品牌 AI 可见度、引用分析、竞品对标与公开行业情报）：geoly-accio-mcp tools 列出工具，geoly-accio-mcp call <工具名> --json <参数> 发起调用。随插件打包、无外部依赖，使用 Accio 内置的 Node.js 运行时，不从 npm 下载软件包。",
+      "zh-TW": "GEOly CLI——透過瀏覽器登入 GEOly 帳號，然後直接呼叫 GEOly 工具（品牌 AI 能見度、引用分析、競品對標與公開產業情報）：geoly-accio-mcp tools 列出工具，geoly-accio-mcp call <工具名> --json <參數> 發起呼叫。隨外掛程式打包、無外部相依套件，使用 Accio 內建的 Node.js 執行環境，不會從 npm 下載套件。"
     },
     "connector.geoly.name": {
       "zh": "GEOly",

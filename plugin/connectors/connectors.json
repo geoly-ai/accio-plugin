@@ -11,7 +11,7 @@
       "canSkipBlocking": true,
       "multiAccount": false,
       "relatedSkills": ["geoly-geo"],
-      "usage": "For GEO / AI-search visibility analytics (brand mentions, citation rate, AIGVR, Share of Model across ChatGPT, Perplexity, Gemini), read the geoly-geo skill and call the GEOly MCP tools discovered via accio-mcp-cli toolkit geoly. Always resolve the org/brand first (list_brands, then get_brand_overview) before quoting any metric.",
+      "usage": "For GEO / AI-search visibility analytics (brand mentions, citation rate, AIGVR, Share of Model across ChatGPT, Perplexity, Gemini), read the geoly-geo skill and call GEOly tools directly through the bundled CLI: `geoly-accio-mcp tools` to discover, `geoly-accio-mcp call <tool> --json '<args>'` to invoke. Always resolve the org/brand first (list_brands, then get_brand_overview) before quoting any metric.",
       "cli": {
         "discover": "npx",
         "auth": {

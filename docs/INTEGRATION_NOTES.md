@@ -11,7 +11,7 @@
 | 组件组合 | Skill + Connector（无 SubAgent/CLI Tool） | 01 文档「最常见、最适合外部团队自助接入」形态（GitHub 同款） |
 | 授权方式 | `cli-login` 声明式自带 Connector（§6.3.2） | 00 文档：三方不开发标准 Connector，一律 cli-login |
 | 登录流 | 浏览器 loopback OAuth（PKCE S256 + DCR，公共客户端） | GEOly 生产 OAuth 已支持（well-known 实测：authorize/token/register/userinfo，`token_endpoint_auth_method: none`，`offline_access`） |
-| MCP 接入 | npm 包内置 stdio↔远程 Streamable HTTP 桥 | GEOly 远程 MCP 无状态、仅 POST（GET/DELETE→405）；桥为纯请求-响应转发，处理 JSON 与 SSE 两种响应格式 |
+| MCP 接入 | **0.2.13 起：包内 CLI 直调**（`geoly-accio-mcp tools` / `call <tool> --json`，一次性 POST 远程 Streamable HTTP）——对齐官方钉钉 dws 模式：cli-login 连接器只管授权，agent 直接命令行调 CLI，不经 MCP toolkit 注册。stdio 桥保留为无参默认行为。教训：`cli.mcpServer` 是 MCP toolkit 注册的唯一来源且必然走 npm 下载，删它=toolkit 消失（0.2.12 真机实证），"包内模式"必须 CLI 直调 | GEOly 远程 MCP 无状态、仅 POST（GET/DELETE→405）；tools/call 免 initialize 直调已真机验证；JSON 与 SSE 两种响应格式均处理 |
 | 静态 token | `GEOLY_API_KEY`（geom_ 只读）优先于 OAuth | headless/CI 兜底，零服务端改造 |
 | 品牌写法 | **GEOly**（owner 拍板 2026-07-21） | 02 文档跨位置一致性强制 |
 | i18n | defaultLocale=en + zh / zh-TW 翻译 | 2.1 手册 entries v1.0 格式；CLI 使用 `cli.{id}.name`；其余 10 种语言后续按需补 |

@@ -12,9 +12,9 @@
 | 评测内容 | GEOly |
 | 评测时间 | 2026-07-24 |
 | 评测人 | Noah Buyer（Accio 操作账号）；GEOly 连接账号 it@rijoy.ai（本工作区含 Apple 受监控数据） |
-| Plugin 文件 | geoly-plugin-0.2.12.zip（在截图版 0.2.8 基础上：①Skill 强制 Markdown 输出（修发现 1）②i18n 补齐 en/zh/zh-TW ③删 connector `cli.mcpServer`——**MCP 全部走插件包内 CLI，不从 npm 下载**） |
+| Plugin 文件 | geoly-plugin-0.2.13.zip（在截图版 0.2.8 基础上：①Skill 强制 Markdown 输出（修发现 1）②i18n 补齐 en/zh/zh-TW ③按评测方指引删 connector `cli.mcpServer`、CLI 增加 `tools`/`call` 直调子命令——**工具全部经插件包内 CLI 直调，不走 npm、不依赖 MCP toolkit 注册**（对齐官方钉钉 dws 模式，已本机真机验证 63 工具可列可调）） |
 | 测试账号 | 自测所用账号（it@rijoy.ai，已连接、Grow+、含真实监控数据）；评测方可另用其自有测试账号 |
-| Tool 个数 | 连接后 `accio-mcp-cli toolkit geoly` 实数为准（实测约 44 个 success 覆盖，含 self + public 两面） |
+| Tool 个数 | 连接后 `geoly-accio-mcp tools` 实数为准（本机实测 63 个；44 个经真机 success 覆盖，含 self + public 两面） |
 | Skill 场景个数 | 9（单一 skill：geoly-geo；4 自有侧 + 5 公开/行业情报） |
 
 ## 一、Plugin 准入检查（全部通过才能继续）

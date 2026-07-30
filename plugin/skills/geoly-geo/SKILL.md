@@ -2,14 +2,14 @@
 name: geoly-geo
 displayName: GEOly AI Visibility
 description: "Use when querying or reporting on AI brand visibility through the GEOly MCP tools — picking the right tool, following the org/brand discovery flow, quoting the correct KPI caliber, and avoiding metric-definition pitfalls. Use for: GEO / generative engine optimization, AI search visibility, brand mentions and citations in ChatGPT / Perplexity / Google AI Mode / Google AI Overview / Gemini / Copilot answers, citation rate, mention rate, AIGVR, Share of Model, competitor benchmarking, category whitespace, brand momentum, AI search query demand, site AI-readiness audit. Chinese trigger terms include: AI 搜索可见度、品牌在 AI 回答中的提及与引用、GEO 优化、引用率、提及率、AI 排名监测、竞品对比。 Do NOT use for classic web SEO keyword rankings, backlink analysis, or paid-ads analytics — GEOly measures AI-answer visibility, not search-engine result pages."
-version: "0.1.2"
+version: "0.1.3"
 tool_triggers:
   - tool: bash
     args:
-      command: '/accio-mcp-cli.*geoly/i'
+      command: '/geoly-accio-mcp/i'
   - tool: bash
     args:
-      command: '/accio-mcp-cli.*(keyword|search|find).*(geo\b|ai.?visibility|ai.?search|citation|brand.?mention|share.?of.?model|aigvr|可见度|提及|引用率)/i'
+      command: '/(geoly|accio-mcp).*(geo\b|ai.?visibility|ai.?search|citation|brand.?mention|share.?of.?model|aigvr|可见度|提及|引用率)/i'
   - tool: get_brand_overview
   - tool: query_analytics
   - tool: compare_public_brands
@@ -33,7 +33,7 @@ This skill depends on the **GEOly connector** in this plugin. If the GEOly MCP t
 `list_brands`, `get_brand_overview`) are missing entirely, ask the user to open the **GEOly plugin
 detail page → App Authorization → Connect**. The browser flow may take time while the user signs in,
 finishes workspace setup, and reviews authorization; waiting is not a failure. Once connected,
-discover the tools with `accio-mcp-cli toolkit geoly` (bash) and continue.
+discover the tools with `geoly-accio-mcp tools` (bash) and continue.
 
 If a GEOly tool is available but a call fails, classify the error before taking any authorization
 action. Never turn every access error into a login loop:
@@ -54,22 +54,24 @@ organization, selection, and transport failures require their specific recovery 
 
 ## Calling the tools (invocation rules — read before your first call)
 
-You reach GEOly tools through `accio-mcp-cli` (run `accio-mcp-cli --help` for its exact call
-syntax). Two rules that otherwise waste calls:
+You reach GEOly tools through the **bundled `geoly-accio-mcp` CLI** (bash) — direct one-shot
+calls, no MCP toolkit registration involved:
 
-- **Pass array / object parameters as one JSON string via `--json`, never as flags.** Flag-style
-  args are type-coerced (numbers/booleans get mangled, lists don't parse), so any tool taking a list
-  (`topic_ids`, `metrics`, `dimensions`, `brand_ids`, `public_brand_ids`, …) or a nested object
-  **fails** with flags. Give the whole argument object as one JSON string, e.g.
-  `--json '{"dataset":"topic_citations_daily","dimensions":["date"],"metrics":["aigvr","citationRate"],"start_date":"2026-05-28","end_date":"2026-06-26"}'`.
-  Scalar-only calls (`--time_range 30d`) are fine with flags, but when in doubt use `--json` for the
-  whole argument set.
-- **Heavy tools need more time than the default per-call timeout (~15s).** The citation-heavy tools
-  on large brands can exceed it — `get_citation_overview`, `get_brand_citations_daily`,
-  `query_analytics` over long ranges, and `compare_public_brands`. If your caller lets you set a
-  per-call timeout, raise it to **60s+** for these; otherwise make the query cheaper first — narrow
-  the date range and/or add a `platform` filter. A timeout is a "make it smaller / wait longer"
-  signal, not a dead end — don't abandon the analysis on the first timeout.
+- `geoly-accio-mcp tools` — list every tool available to this account (name + one-line description)
+- `geoly-accio-mcp tools --json` — full parameter schemas when you need exact argument names/enums
+- `geoly-accio-mcp call <tool> --json '<args JSON>'` — invoke one tool; prints the tool's JSON result
+
+Rules that otherwise waste calls:
+
+- **All arguments go in ONE JSON object via `--json`.** There are no per-argument flags. Example:
+  `geoly-accio-mcp call query_analytics --json '{"dataset":"topic_citations_daily","dimensions":["date"],"metrics":["aigvr","citationRate"],"start_date":"2026-05-28","end_date":"2026-06-26"}'`.
+  No-arg tools still take `--json '{}'` (or omit `--json` entirely).
+- **Heavy tools can hit the server-side timeout on a cold first call** — `get_citation_overview`,
+  `get_brand_citations_daily`, `query_analytics` over long ranges, `compare_public_brands`, and
+  occasionally `get_brand_overview` on large workspaces. A timeout message is a "retry / make it
+  smaller" signal, not a dead end: **retry once** (the first call warms the server cache and the
+  retry usually returns in seconds), or narrow the date range / add a `platform` filter. The CLI
+  waits up to 120s by default; `--timeout <seconds>` raises the client-side wait if you need more.
 
 ## Presenting results (output format — do this every answer)
 

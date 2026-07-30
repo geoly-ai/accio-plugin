@@ -21,7 +21,7 @@ function writeError(id, code, message) {
  * 否则用 ~/.geoly/credentials 的 OAuth token，过期前 60s 或收到 401 时用 refresh_token 换新。
  * refresh 单飞（并发请求共享同一次刷新）。
  */
-function createTokenManager() {
+export function createTokenManager() {
   const staticKey = process.env.GEOLY_API_KEY || null;
   let creds = staticKey ? null : loadCredentials();
   let refreshing = null;
@@ -130,7 +130,7 @@ export async function runBridge() {
       writeError(
         id,
         -32002,
-        'Not signed in to GEOly. Connect the GEOly connector (App Authorization → Connect), or run: npx -y @geoly/accio-mcp login'
+        'Not signed in to GEOly. Connect the GEOly connector (App Authorization → Connect), or run: geoly-accio-mcp login'
       );
       return;
     }
@@ -148,7 +148,7 @@ export async function runBridge() {
             -32001,
             tokens.isStatic
               ? 'GEOLY_API_KEY was rejected (invalid or revoked geom_ token). Issue a new token in the GEOly dashboard.'
-              : 'GEOly session expired. Reconnect the GEOly connector (App Authorization → Connect), or run: npx -y @geoly/accio-mcp login'
+              : 'GEOly session expired. Reconnect the GEOly connector (App Authorization → Connect), or run: geoly-accio-mcp login'
           );
           return;
         }

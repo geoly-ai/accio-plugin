@@ -18,7 +18,7 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const pkgPath = join(root, 'packages/accio-mcp/package.json');
 const version = JSON.parse(readFileSync(pkgPath, 'utf8')).version;
 
-const order = ['config', 'credentials', 'oauth', 'bridge', 'main'];
+const order = ['config', 'credentials', 'oauth', 'bridge', 'invoke', 'main'];
 const nodeImports = new Set();
 const bodies = [];
 

@@ -4,16 +4,44 @@ import { clearCredentials, loadCredentials } from './credentials.mjs';
 const HELP = `GEOly Accio connector CLI v${VERSION}
 
 Usage:
-  geoly-accio-mcp login     Sign in to GEOly in your browser (writes ~/.geoly/credentials)
-  geoly-accio-mcp logout    Remove the stored GEOly session
-  geoly-accio-mcp status    Show sign-in status
-  geoly-accio-mcp           (no args) Run the stdio MCP bridge to ${MCP_URL}
+  geoly-accio-mcp tools                          List available GEOly tools (--json = full parameter schemas)
+  geoly-accio-mcp call <tool> --json '<args>'    Call one GEOly tool; args = ONE JSON object (--json '{}' if none)
+                                                 Options: --timeout <seconds> (default 120)
+  geoly-accio-mcp login                          Sign in to GEOly in your browser (writes ~/.geoly/credentials)
+  geoly-accio-mcp logout                         Remove the stored GEOly session
+  geoly-accio-mcp status                         Show sign-in status
+  geoly-accio-mcp                                (no args) Run the stdio MCP bridge to ${MCP_URL}
+
+Examples:
+  geoly-accio-mcp call get_brand_overview --json '{"time_range":"30d"}'
+  geoly-accio-mcp call search_public_entities --json '{"query":"wireless earbuds"}'
+
+Exit codes: 0 ok · 1 tool/transport error · 2 usage error
 
 Environment:
   GEOLY_API_KEY   Use a read-only geom_ static token instead of the stored login
   GEOLY_BASE_URL  Override the GEOly base URL (testing only)
   GEOLY_DEBUG     Verbose bridge logging on stderr
 `;
+
+/** 解析 tools/call 子命令的选项：--json（tools=布尔开关 / call=取下一个值）与 --timeout 秒数。 */
+function parseInvokeFlags(rest, jsonTakesValue) {
+  const opts = { positional: [] };
+  for (let i = 0; i < rest.length; i++) {
+    const a = rest[i];
+    if (a === '--json') {
+      if (jsonTakesValue) opts.argsJson = rest[++i];
+      else opts.json = true;
+    } else if (a === '--timeout') {
+      const sec = Number(rest[++i]);
+      if (!Number.isFinite(sec) || sec <= 0) throw Object.assign(new Error('--timeout expects seconds, e.g. --timeout 180'), { exitCode: 2 });
+      opts.timeoutMs = sec * 1000;
+    } else {
+      opts.positional.push(a);
+    }
+  }
+  return opts;
+}
 
 /**
  * CLI 入口分发：login / logout / status / --version / --help，
@@ -28,6 +56,27 @@ export async function main(argv) {
   }
   if (cmd === '--help' || cmd === '-h' || cmd === 'help') {
     console.log(HELP);
+    return;
+  }
+  // tools / call：agent 直调路径（Accio 官方包内 CLI 模式，同 dws——不经 MCP toolkit 注册）
+  if (cmd === 'tools' || cmd === 'call') {
+    const { runTools, runCall } = await import('./invoke.mjs');
+    try {
+      const opts = parseInvokeFlags(argv.slice(1), cmd === 'call');
+      if (cmd === 'tools') {
+        await runTools(opts);
+      } else {
+        const name = opts.positional[0];
+        if (!name) {
+          console.error("[geoly] Usage: geoly-accio-mcp call <tool> --json '<args JSON>'");
+          process.exit(2);
+        }
+        await runCall(name, opts.argsJson, opts);
+      }
+    } catch (e) {
+      console.error(`[geoly] ${e.message}`);
+      process.exit(e.exitCode ?? 1);
+    }
     return;
   }
   if (cmd === 'login') {
