@@ -42,6 +42,12 @@ version）→ ②若改了 `packages/accio-mcp` 跑 `scripts/bundle-cli.mjs` 重
 （`auth.npmPackage` 仅登录兜底，钉 0.1.0 不动）。仓库已公开
 （github.com/geoly-ai/accio-plugin），可用 GitHub Releases 挂 zip 提供稳定下载地址。
 
+**决策：不做运行时自更新（CLI 拉 GitHub 更新自己）**——①`node-cli` source 无更新字段，
+唯一外拉通道 npm-package 已被评测方否掉；②loader 式运行时拉代码=远程代码执行，违背
+评测方"全部包内"的明确要求，且国内到 GitHub raw 可达性差、无签名校验则仓库被盗=全员 RCE；
+③架构上不需要：桥是纯转发，工具面/逻辑全在服务端，服务端发版即生效；需动包的只有
+skill/connector/桥修复（低频），走"交新 zip → Accio 发布"。GitHub 仅作人拉的分发渠道。
+
 ## 凭据契约（03 §6.3.2）
 
 - 路径：`~/.geoly/credentials`（home 相对路径，connector 声明与 npm 包共用）。
