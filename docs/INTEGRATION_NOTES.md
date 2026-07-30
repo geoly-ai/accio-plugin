@@ -18,9 +18,29 @@
 
 ## 版本钉死约定
 
-`connectors.json` 里 `auth.npmPackage` 与 `mcpServer.npmPackage` 均钉 `@geoly/accio-mcp@0.1.0`
-（03 文档建议同版本防 npx latest 漂移）。发版四处同步 bump：npm 包、connectors.json ×2、
-plugin.json。
+**0.2.12 起**：`cli.mcpServer` 已删（Accio 评测方 2026-07 反馈：声明它会走 npm 下载，
+其内网镜像拉不到 `@geoly/accio-mcp`）——MCP 全部走插件包内 CLI（`clis/geoly.mjs`）。
+`connectors.json` 仅剩 `auth.npmPackage` 钉 `@geoly/accio-mcp@0.1.0` 作登录兜底
+（包内 CLI 在场时不触发，防 npx latest 漂移，常态不动）。发版同步 bump 见下节清单。
+
+## 更新 / 发版流程（两阶段）
+
+**阶段 A · 评测期（本地导入，现状）**：更新 = 重新导入新 zip。Accio 按 `plugin.json` 的
+`name` 识别同一插件、按 `version` 识别新版本（版本号必须递增）。实操路径（0.2.5→0.2.12
+已多次验证）：插件页删除旧版 → 导入新 zip → 重走"应用到 Agent"；**若改动涉及
+connectors.json / clis.json，需重连一次授权**；只动 skill/i18n/文案则授权保留。
+
+**阶段 B · 上架后（Plugin Center 分发）**：分发权在 Accio 平台侧，开发者不能自行推送。
+发版 = 交付新 zip（版本号递增）+ 变更说明给 Accio 对接群/评测通道 → 平台按改动面做
+增量评测（动 connector/CLI 重测授权层；仅 skill/文案轻量复核）→ 审核通过后由 Accio
+在插件中心发布 → 终端用户从插件中心获取新版本（推送/提示由平台机制决定）。
+
+**我方发版清单**：①bump `plugin.json` version（若动 skill 同步 bump 其 frontmatter
+version）→ ②若改了 `packages/accio-mcp` 跑 `scripts/bundle-cli.mjs` 重新生成
+`plugin/clis/geoly.mjs` → ③`Compress-Archive plugin/* geoly-plugin-<ver>.zip` →
+④交付 zip + 变更说明。**0.2.12 起 MCP 全走包内 CLI，发版不再依赖 npm 发包**
+（`auth.npmPackage` 仅登录兜底，钉 0.1.0 不动）。仓库已公开
+（github.com/geoly-ai/accio-plugin），可用 GitHub Releases 挂 zip 提供稳定下载地址。
 
 ## 凭据契约（03 §6.3.2）
 
