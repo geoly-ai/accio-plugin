@@ -62,6 +62,7 @@ skill/connector/桥修复（低频），走"交新 zip → Accio 发布"。GitHu
 | `category` 标准分类 ID | **暂填 `marketing` 占位** —— 《3.3 Plugin 分类清单》未公开分享，需向 Accio 对接群要清单后改 |
 | connectors.json 具体 JSON 形态 | 官方文档代码块示例（dingtalk/feishu）在网页版不可见，本文件按字段表推导；**首次导入测试包即可验证**（评测第一层第 2 项） |
 | Connector `visibility` | 未声明（默认）；要不要上全局 Connectors 页由 Accio 对接定 |
+| 插件是否支持 URL/git 仓库导入源（自动拉更新） | **待问对接群**。当前仅本地目录/zip 导入 + 插件中心分发，无 git 直连；若平台支持/在做，本仓库（已 public）零改造可作更新源。评测期折中：测试机 clone 仓库、导入 `plugin/` 目录，更新=git pull+重导 |
 | 品牌色 `color: #111111` | 按 logo 黑色暂定，设计侧可改 |
 | icon | 由官方 logo.png 等比缩放至 240×240 PNG（02 规范允许）；有官方 SVG 后替换更佳 |
 | device-code 登录（webAuth） | **P2 未做**。需 GEOly 服务端支持 RFC 8628 device grant（Better Auth mcp 插件当前无）；不做则网页版/远端沙箱用户无法授权，桌面端不受影响 |
