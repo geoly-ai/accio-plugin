@@ -22,10 +22,6 @@
           "kind": "file",
           "home": ".geoly/credentials"
         },
-        "mcpServer": {
-          "name": "geoly",
-          "npmPackage": "@geoly/accio-mcp@0.1.0"
-        },
         "fallbackLabel": "GEOly account"
       }
     }
