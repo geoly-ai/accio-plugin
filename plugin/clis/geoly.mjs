@@ -20,7 +20,7 @@ const MCP_URL = `${BASE_URL}/api/mcp`;
 const CRED_DIR = join(homedir(), '.geoly');
 const CRED_FILE = join(CRED_DIR, 'credentials');
 const CLIENT_NAME = 'geoly-accio-plugin';
-const VERSION = "0.2.4";
+const VERSION = "0.2.5";
 const OAUTH_SCOPE = 'openid profile email offline_access';
 
 // 登录守护进程(login helper)的握手文件：helper 上报回调端口 / login 下发一次性 OAuth 配置 /
@@ -297,6 +297,10 @@ async function login() {
     code_challenge: challenge,
     code_challenge_method: 'S256',
     resource: MCP_URL,
+    // 注册归因：未登录时 Better Auth 会把 authorize 的原始 query 原样转发到登录页，
+    // geoly 侧 proxy 从页面 URL 落 utm cookie → 注册通知（Nebula→飞书）渠道显示 Accio。
+    // 已登录用户直接通过 authorize，不落页面、无影响；OAuth 对未知参数按规范忽略。
+    utm_source: 'accio',
   }).toString();
 
   // 显著打印授权 URL 到 stdout 和 stderr：即便自动弹窗被 GUI 宿主拦掉，

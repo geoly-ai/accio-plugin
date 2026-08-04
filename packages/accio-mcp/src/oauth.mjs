@@ -242,6 +242,10 @@ export async function login() {
     code_challenge: challenge,
     code_challenge_method: 'S256',
     resource: MCP_URL,
+    // 注册归因：未登录时 Better Auth 会把 authorize 的原始 query 原样转发到登录页，
+    // geoly 侧 proxy 从页面 URL 落 utm cookie → 注册通知（Nebula→飞书）渠道显示 Accio。
+    // 已登录用户直接通过 authorize，不落页面、无影响；OAuth 对未知参数按规范忽略。
+    utm_source: 'accio',
   }).toString();
 
   // 显著打印授权 URL 到 stdout 和 stderr：即便自动弹窗被 GUI 宿主拦掉，
