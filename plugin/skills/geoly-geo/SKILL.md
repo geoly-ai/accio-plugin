@@ -1,8 +1,8 @@
 ---
 name: geoly-geo
 displayName: GEOly AI Visibility
-description: "Use when querying or reporting on AI brand visibility through the GEOly MCP tools — picking the right tool, following the org/brand discovery flow, quoting the correct KPI caliber, and avoiding metric-definition pitfalls. Use for: GEO / generative engine optimization, AI search visibility, brand mentions and citations in ChatGPT / Perplexity / Google AI Mode / Google AI Overview / Gemini / Copilot answers, citation rate, mention rate, AIGVR, Share of Model, competitor benchmarking, category whitespace, brand momentum, AI search query demand, site AI-readiness audit. Chinese trigger terms include: AI 搜索可见度、品牌在 AI 回答中的提及与引用、GEO 优化、引用率、提及率、AI 排名监测、竞品对比。 Do NOT use for classic web SEO keyword rankings, backlink analysis, or paid-ads analytics — GEOly measures AI-answer visibility, not search-engine result pages."
-version: "0.1.4"
+description: "Use when querying or reporting on AI brand visibility through the GEOly MCP tools — picking the right tool, following the org/project discovery flow, quoting the correct KPI caliber, and avoiding metric-definition pitfalls. Use for: GEO / generative engine optimization, AI search visibility, brand mentions and citations in ChatGPT / Perplexity / Google AI Mode / Google AI Overview / Gemini / Copilot answers, citation rate, mention rate, AIGVR, Share of Model, competitor benchmarking, category whitespace, brand momentum, AI search query demand, site AI-readiness audit. Chinese trigger terms include: AI 搜索可见度、品牌在 AI 回答中的提及与引用、GEO 优化、引用率、提及率、AI 排名监测、竞品对比。 Do NOT use for classic web SEO keyword rankings, backlink analysis, or paid-ads analytics — GEOly measures AI-answer visibility, not search-engine result pages."
+version: "0.1.5"
 tool_triggers:
   - tool: bash
     args:
@@ -22,11 +22,18 @@ Google AI Mode, Google AI Overview, Gemini; Perplexity and Copilot are retired �
 2026-09-20 and 2026-10-11 respectively). The GEOly MCP server exposes **up to 55 tools** (the exact set depends
 on plan, mode, and write profile) across two surfaces:
 
-- **Self / brand-own** — the customer's own monitoring, audits, GA4, and write actions.
+- **Self / own monitoring (project-scoped)** — the customer's own monitoring, audits, GA4, and write actions.
 - **Public / industry** — cross-brand competitive intelligence (Grow tier and above).
 
+**Projects and `brand_id`.** A project is GEOly's monitoring unit: it tracks one own brand plus its
+competitors. For historical reasons a project's id is passed as `brand_id`, and tools such as
+`list_brands` list projects. Own-monitoring `brand_id` is never a `public_brand.id` (the `brand_id`
+that public tools take is a public brand id — bridge with `resolve_my_brand_public`). Tool names,
+parameter names, response keys and error codes keep the word "brand"; elsewhere in this skill
+"brand" means the brand itself — your own brand, a competitor, a public brand.
+
 The data is correct; **most mistakes are caliber mistakes** (mixing aggregations of the same
-metric name) or **flow mistakes** (calling a brand tool before resolving which brand).
+metric name) or **flow mistakes** (calling a project-scoped tool before resolving which project).
 
 ## Prerequisites and access recovery
 
@@ -107,14 +114,15 @@ mention ≠ citation; AIGVR ≠ Share of Model; record-rate ≠ URL counts; the 
 two numbers disagree, it is almost always a caliber/window/platform mismatch — reconcile, don't
 guess.
 
-**5. Resolve the brand before calling brand tools.**
-In multi-brand / multi-org mode, call `list_brands` (and first `list_organizations`) and pass
-`brand_id`. If a brand tool errors asking which brand, run the discovery tools first.
+**5. Resolve the project before calling project-scoped tools.**
+In multi-project / multi-org mode, call `list_brands` (it lists projects; first `list_organizations`)
+and pass the project id as `brand_id`. If a project-scoped tool errors asking which project, run the
+discovery tools first.
 
 **6. Recover from errors, don't loop.**
 A `402` / "subscription inactive" or a missing `get_public_*` tool is a gating signal, not a
 transient error — check mode, subscription, and plan tier before retrying. Respect truncation
-markers (`_truncated`/`_shownCount` on brand tools; a plain-text `[truncated …]` marker on
+markers (`_truncated`/`_shownCount` on project-scoped tools; a plain-text `[truncated …]` marker on
 public/report tools) and paginate (`currentPage == totalPages`) instead of assuming completeness.
 
 ## Connection & access (what affects your calls)
@@ -123,11 +131,13 @@ public/report tools) and paginate (`currentPage == totalPages`) instead of assum
   locally; the MCP bridge talks to `https://app.geoly.ai/api/mcp`. A read-only
   `GEOLY_API_KEY` environment variable (`geom_…` static token) is also accepted for
   headless use and takes precedence over the stored login.
-- **Mode → discovery flow** (decides whether brand tools need a `brand_id`):
-  - **single** (one org, one brand) → brand tools auto-resolve; just call them.
-  - **multi-brand** (one org, many brands) → first `list_brands`, then pass `brand_id`.
+- **Mode → discovery flow** (decides whether project-scoped tools need a `brand_id`):
+  - **single** (one org with one project, or a token / API key bound to one project) →
+    project-scoped tools auto-resolve; just call them.
+  - **multi-project** (one org, several projects) → first `list_brands` (lists projects), then
+    pass the project id as `brand_id`.
   - **multi-org** (several orgs) → first `list_organizations`, then `list_brands`, then pass IDs.
-- **Subscription gate**: single-org / single-brand context returns **HTTP 402** at entry if the
+- **Subscription gate**: single-org / single-project context returns **HTTP 402** at entry if the
   subscription is inactive. Multi-org validates **per target org at call time** and fails that
   org's tool call with an error message (not a 402).
 - **Public tools** require a **Grow-tier-or-above** plan (`grow | advanced | plus | enterprise`).
@@ -142,10 +152,10 @@ public/report tools) and paginate (`currentPage == totalPages`) instead of assum
 
 ## Tool selection — question → tool
 
-### Self / brand-own
+### Self / own monitoring (project-scoped)
 | You want… | Use |
 |---|---|
-| Orientation first: brand/org, today's dates, entitled + with-data platforms, topic & filter ids, entity-layer tracked competitors, credits | `get_brand_context` (free, once per run) |
+| Orientation first: project/org, today's dates, entitled + with-data platforms, topic & filter ids, entity-layer tracked competitors, credits | `get_brand_context` (free, once per run) |
 | Headline KPI (AIGVR / mention / citation rate, whole window) | `get_brand_overview` |
 | Daily/weekly **trend** of those metrics (the `/overview` trend chart) | `get_daily_trend` `breakdown="platform"` (or `"total"`); `totals` = the window values of the same rows |
 | This period **vs the previous one** (week-over-week, month-over-month) with `days_with_data` | `get_daily_trend` with `compare_previous=true` (per-row and `totals` `previous.*` / `delta.*`) |
@@ -155,7 +165,7 @@ public/report tools) and paginate (`currentPage == totalPages`) instead of assum
 | Which competitors does the AI prefer **instead of** us, answer by answer (`weLose` per rival — the page's "who beats you" board; no weWin/tie any more) | `get_verdict` `view="competitors"` |
 | Which cited sites ride along with **negative** aspect judgments of us (Verdict › Sources tab: `kind`, `citedRecords`, `negativeShare`) | `get_verdict` `view="sources"` (default 7d — the page shows 30d) |
 | A prompt's **full execution history** over a range (per-day records, e.g. 30-day shopping-card trend) | `list_prompt_records` (explicit `start_date`/`end_date` are UTC+8 business days) |
-| **Read the actual answers** brand-wide — every AI answer in the window, filtered by topic / tag / country / platform / "mentions entity X" / "mentions us", paginated (= in-app /answers) | `list_brand_answers` (`answerSummary` + `entities[]` + `sources[]` per row; drill one row with `get_prompt_record_detail`) |
+| **Read the actual answers** project-wide — every AI answer in the window, filtered by topic / tag / country / platform / "mentions entity X" / "mentions us", paginated (= in-app /answers) | `list_brand_answers` (`answerSummary` + `entities[]` + `sources[]` per row; drill one row with `get_prompt_record_detail`) |
 | The actual **citation URLs / sources** for a prompt | `get_prompt_citations` (`deduplicate=true` for a source list) |
 | "Which queries never mention us" (blind spots) | `get_prompt_list` `view="mention_rates"` (worst first by default) |
 | Citation **domain distribution / ownership** | `get_citation_overview` (counts URLs, not records; window = N whole +08 calendar days + today on the citation-creation axis — read `caliber` + `window` from the response) |
@@ -166,7 +176,7 @@ public/report tools) and paginate (`currentPage == totalPages`) instead of assum
 | How AI *describes* the brand (verbatim) | `list_brand_answers` `view="mention_samples"`; vs rivals → `get_competitor_cooccurrence` |
 | Topic-level analysis | `get_topic_list` (ids, free) → `get_topic_analytics` (pass `topic_ids`) or `get_daily_trend` `breakdown="topic"` for day-level topic trends |
 | Sentiment (brand-wide distribution / daily trend / per platform — no verbatim highlights, use `list_brand_answers` `view="mention_samples"` for those) | `get_sentiment_dashboard` |
-| The brand library (own brand + tracked competitors + system suggestions + removed), same rows as Settings › Brand | `get_competitor_list` (competitors = `status="tracked"` and `is_own_brand=false`) |
+| The brand library (own brand + tracked competitors + system suggestions + removed), same rows as Settings › Project › Brands | `get_competitor_list` (competitors = `status="tracked"` and `is_own_brand=false`) |
 | Site AI-readiness audit | `get_audit_list` → `get_audit_detail` (the report header + single-page checks + fix copy in `checksMeta`) → `get_audit_detail` `section="pages"` for a site audit's per-page results / `fetch_quality=unusable` pages |
 | Traffic (if GA4 connected) | `get_traffic_data` `source="ga4"` (add `page_path` for one page). Whole-site vs AI-referred fields live in the same payload — see the catalog row before quoting a number; the page opens on 7d, the tool defaults to 30d |
 | AI crawlers hitting the site (if Cloudflare connected) | `get_traffic_data` `source="cloudflare"` — bots fetching pages, **not** visitors arriving from AI answers (that is `source="ga4"`). Two calibers to keep straight: `changes.blockedEvents` is always `null` (never computed), and `blockedEvents[]` is capped at 50 rows (`blocked_events_limit`) — quote per-crawler block counts from the uncapped `blockedCrawlerSummary` |
@@ -220,7 +230,7 @@ citation-creation axis plus today** (matches the /sources/citations page), not t
 `now − N×24h` preset window of `get_brand_overview` (whose `custom` range is instead an exact
 +08 business-day span, echoed as full ISO instants) — never subtract one from the other; quote the
 `window` each response returns. Their `platform` (and `get_url_detail`'s rolling caliber)
-must be `all` or an **active** platform the brand is entitled to
+must be `all` or an **active** platform the project is entitled to
 (exactly the page's platform chips) — an unknown, un-entitled or retired code (e.g. a
 `claude` / `grok` entry left in an old entitlement list) returns `{ error }` listing the
 allowed codes, never a silent fall-back to all. Shares: the page shows one decimal — format
@@ -231,7 +241,7 @@ the old query ran instead — its `window` then differs by tool: `get_citation_o
 day-granular, not an instant); `get_domain_detail` / `get_url_detail` (page caliber) report an exact
 `start..end` instant pair on citation `created_at` (rolling N×24h). Quote whichever you got.
 
-> No deprecated aliases are listed (0.7.0): the brand-own and public old names — including the
+> No deprecated aliases are listed (0.7.0): the own-monitoring and public old names — including the
 > 0.6.x forwarding aliases — left `tools/list`. `/api/mcp/v1` (also served at `/api/mcp`) is MCP v1
 > (`GEOly-MCP-Version: 1`); the 34 old names are not part of v1: they stay hidden and callable until 2026-11-30 and are then
 > removed (the three non-drop-in ones — `get_competitor_overview`, `get_brand_citations_daily`,
