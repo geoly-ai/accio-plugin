@@ -2,7 +2,7 @@
 name: geoly-geo
 displayName: GEOly AI Visibility
 description: "Use when querying or reporting on AI brand visibility through the GEOly MCP tools — picking the right tool, following the org/project discovery flow, quoting the correct KPI caliber, and avoiding metric-definition pitfalls. Use for: GEO / generative engine optimization, AI search visibility, brand mentions and citations in ChatGPT / Perplexity / Google AI Mode / Google AI Overview / Gemini / Copilot answers, citation rate, mention rate, AIGVR, Share of Model, competitor benchmarking, category whitespace, brand momentum, AI search query demand, site AI-readiness audit. Chinese trigger terms include: AI 搜索可见度、品牌在 AI 回答中的提及与引用、GEO 优化、引用率、提及率、AI 排名监测、竞品对比。 Do NOT use for classic web SEO keyword rankings, backlink analysis, or paid-ads analytics — GEOly measures AI-answer visibility, not search-engine result pages."
-version: "0.1.5"
+version: "0.1.6"
 tool_triggers:
   - tool: bash
     args:
@@ -80,6 +80,11 @@ Rules that otherwise waste calls:
   smaller" signal, not a dead end: **retry once** (the first call warms the server cache and the
   retry usually returns in seconds), or narrow the date range / add a `platform` filter. The CLI
   waits up to 120s by default; `--timeout <seconds>` raises the client-side wait if you need more.
+- **`BUDGET_EXCEEDED` / `BUSY` are "slow down", not failures.** `BUDGET_EXCEEDED` is an hourly
+  per-organization load guard (not your credits); both carry `retry_after_seconds` — wait that long,
+  do not hammer. Hitting it means too many small calls: batch them — `get_prompt_record_detail`
+  takes `record_ids` (up to 100 per call), never one call per record — and do not re-read records
+  you already have.
 
 ## Presenting results (output format — do this every answer)
 
@@ -144,10 +149,11 @@ public/report tools) and paginate (`currentPage == totalPages`) instead of assum
   Multi-org connections get them too, as long as **any** accessible org qualifies. The three
   public **source** tools (`get_public_sources_overview` / `get_public_source_domain_detail` /
   `get_public_source_brand_conduit`) are NOT plan-gated — every token has them.
-- **Writes** (`create_prompt`, `create_topic`, `create_competitor`, `trigger_prompt`) require
+- **Writes** (`create_prompt`, `create_topic`, `create_competitor`, `trigger_prompt`, `archive_prompt`, `update_prompt_tags`, `move_prompts_to_topic`, `generate_prompt_suggestions`, `finalize_prompt_suggestions`, `update_prompt_suggestions`) require
   **write access granted on the OAuth consent screen** (per-resource read/write grid; default
   is all-read, no-write). The `geom_` static token is always read-only, and **multi-org
-  connections are always read-only**. `trigger_prompt` **consumes credits**.
+  connections are always read-only**. `trigger_prompt` really fires a scrape run (real work), so it
+  always needs explicit intent — but it does **not** consume quota credits.
 - **Dates**: call `get_current_date` before building date ranges; `get_daily_trend` ranges ≤ 366 days (its derived data starts 2026-04-13).
 
 ## Tool selection — question → tool
@@ -165,7 +171,7 @@ public/report tools) and paginate (`currentPage == totalPages`) instead of assum
 | Which competitors does the AI prefer **instead of** us, answer by answer (`weLose` per rival — the page's "who beats you" board; no weWin/tie any more) | `get_verdict` `view="competitors"` |
 | Which cited sites ride along with **negative** aspect judgments of us (Verdict › Sources tab: `kind`, `citedRecords`, `negativeShare`) | `get_verdict` `view="sources"` (default 7d — the page shows 30d) |
 | A prompt's **full execution history** over a range (per-day records, e.g. 30-day shopping-card trend) | `list_prompt_records` (explicit `start_date`/`end_date` are UTC+8 business days) |
-| **Read the actual answers** project-wide — every AI answer in the window, filtered by topic / tag / country / platform / "mentions entity X" / "mentions us", paginated (= in-app /answers) | `list_brand_answers` (`answerSummary` + `entities[]` + `sources[]` per row; drill one row with `get_prompt_record_detail`) |
+| **Read the actual answers** project-wide — every AI answer in the window, filtered by topic / tag / country / platform / "mentions entity X" / "mentions us", paginated (= in-app /answers) | `list_brand_answers` (`answerSummary` + `entities[]` + `sources[]` per row; drill one row with `get_prompt_record_detail`, or many rows in one call with its `record_ids`) |
 | The actual **citation URLs / sources** for a prompt | `get_prompt_citations` (`deduplicate=true` for a source list) |
 | "Which queries never mention us" (blind spots) | `get_prompt_list` `view="mention_rates"` (worst first by default) |
 | Citation **domain distribution / ownership** | `get_citation_overview` (counts URLs, not records; window = N whole +08 calendar days + today on the citation-creation axis — read `caliber` + `window` from the response) |
@@ -184,6 +190,7 @@ public/report tools) and paginate (`currentPage == totalPages`) instead of assum
 | Archive / restore a prompt | `archive_prompt` (write grant; `restore=true` to bring it back; idempotent). Archived prompts refuse `trigger_prompt` until restored |
 | Tag prompts in bulk / rename a tag | `update_prompt_tags` (write grant): `action=add\|remove` with `prompt_ids` + `tags`; `action=rename` with `old_name` + `new_name` |
 | Move prompts to a topic / ungroup | `move_prompts_to_topic` (write grant): `prompt_ids` + `topic_id` from `get_topic_list`, or `topic_id=null` |
+| Find new prompts to monitor (Discovery) | `generate_prompt_suggestions` (write grant, async) → poll `get_prompt_suggestion_generation` → `list_prompt_suggestions` (with relative search volume) → `finalize_prompt_suggestions` (accept = start monitoring, same id; reject = never suggested again) / `update_prompt_suggestions`. Suggestions are not prompts until accepted and appear in no other tool |
 
 > `display_data` / `display_chart` and `web_search` / `fetch_page` are **in-app agent only** —
 > not exposed over MCP. MCP results are plain JSON (no `_ref`).
